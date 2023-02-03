@@ -7,7 +7,7 @@ namespace Mango.Web.Services;
 public class ProductService : BaseService, IProductService
 {
     private readonly string _productApiUrl;
-    private const string ProductApiControllerPath = "api/products/";
+    private const string ProductApiControllerPath = "api/products";
 
     public ProductService(IHttpClientFactory httpClient) : base(httpClient)
     {
@@ -29,7 +29,7 @@ public class ProductService : BaseService, IProductService
         return await SendAsync<T>(new ApiRequest()
         {
             ApiType = SD.ApiType.GET,
-            Url = $"{_productApiUrl}{id}",
+            Url = $"{_productApiUrl}/{id}",
             AccessToken = ""
         });
     }
@@ -61,7 +61,7 @@ public class ProductService : BaseService, IProductService
         return await SendAsync<T>(new ApiRequest()
         {
             ApiType = SD.ApiType.DELETE,
-            Url = $"{_productApiUrl}{id}",
+            Url = $"{_productApiUrl}/{id}",
             AccessToken = ""
         });
     }

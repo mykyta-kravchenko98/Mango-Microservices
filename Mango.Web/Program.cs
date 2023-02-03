@@ -15,7 +15,7 @@ builder.Services.AddCors(options =>
 });
 // Add services to the container.
 builder.Services.AddHttpClient<IProductService, ProductService>();
-SD.ProductApiBase = builder.Configuration["ServiceUrls.ProductApi"];
+SD.ProductApiBase = builder.Configuration["ServiceUrls:ProductApi"];
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddControllersWithViews();

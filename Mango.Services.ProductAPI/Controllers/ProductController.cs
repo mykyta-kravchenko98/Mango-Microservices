@@ -100,6 +100,7 @@ public class ProductController : ControllerBase
     }
     
     [HttpDelete]
+    [Route("{id}")]
     public async Task<ResponseDto> Delete(long id)
     {
         try

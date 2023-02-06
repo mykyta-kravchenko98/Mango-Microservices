@@ -9,7 +9,7 @@ public class ProductService : BaseService, IProductService
     private readonly string _productApiUrl;
     private const string ProductApiControllerPath = "api/products";
 
-    public ProductService(IHttpClientFactory httpClient) : base(httpClient)
+    public ProductService(IHttpClientFactory httpClient, IHttpContextAccessor contextAccessor) : base(httpClient, contextAccessor)
     {
         _productApiUrl = SD.ProductApiBase + ProductApiControllerPath;
     }
@@ -19,8 +19,7 @@ public class ProductService : BaseService, IProductService
         return await SendAsync<T>(new ApiRequest()
         {
             ApiType = SD.ApiType.GET,
-            Url = _productApiUrl,
-            AccessToken = ""
+            Url = _productApiUrl
         });
     }
 
@@ -29,8 +28,7 @@ public class ProductService : BaseService, IProductService
         return await SendAsync<T>(new ApiRequest()
         {
             ApiType = SD.ApiType.GET,
-            Url = $"{_productApiUrl}/{id}",
-            AccessToken = ""
+            Url = $"{_productApiUrl}/{id}"
         });
     }
 
@@ -40,8 +38,7 @@ public class ProductService : BaseService, IProductService
         {
             ApiType = SD.ApiType.POST,
             Data = product,
-            Url = _productApiUrl,
-            AccessToken = ""
+            Url = _productApiUrl
         });
     }
 
@@ -51,8 +48,7 @@ public class ProductService : BaseService, IProductService
         {
             ApiType = SD.ApiType.PUT,
             Data = product,
-            Url = _productApiUrl,
-            AccessToken = ""
+            Url = _productApiUrl
         });
     }
 
@@ -61,8 +57,7 @@ public class ProductService : BaseService, IProductService
         return await SendAsync<T>(new ApiRequest()
         {
             ApiType = SD.ApiType.DELETE,
-            Url = $"{_productApiUrl}/{id}",
-            AccessToken = ""
+            Url = $"{_productApiUrl}/{id}"
         });
     }
 }

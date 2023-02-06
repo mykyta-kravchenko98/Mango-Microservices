@@ -1,5 +1,6 @@
 using Mango.Web.Models.Dtos;
 using Mango.Web.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -30,6 +31,7 @@ public class ProductController : Controller
     }
     
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ProductCreate(ProductDto model)
     {
@@ -44,7 +46,7 @@ public class ProductController : Controller
 
         return View(model);
     }
-    
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> ProductEdit(int productId)
     {
         var response = await _productService.GetProductsByIdAsync<ResponseDto>(productId);
@@ -57,6 +59,7 @@ public class ProductController : Controller
     }
     
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ProductEdit(ProductDto model)
     {
@@ -72,6 +75,7 @@ public class ProductController : Controller
         return View(model);
     }
     
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> ProductDelete(int productId)
     {
         var response = await _productService.GetProductsByIdAsync<ResponseDto>(productId);
@@ -84,6 +88,7 @@ public class ProductController : Controller
     }
     
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ProductDelete(ProductDto model)
     {

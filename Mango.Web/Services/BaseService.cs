@@ -1,8 +1,11 @@
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json.Serialization;
 using Mango.Web.Models;
 using Mango.Web.Models.Dtos;
 using Mango.Web.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 
 namespace Mango.Web.Services;
@@ -11,9 +14,11 @@ public class BaseService : IBaseService
 {
     public ResponseDto ResponseModel { get; set; }
     protected readonly IHttpClientFactory _httpClient;
+    private readonly IHttpContextAccessor _accessor;
 
-    public BaseService(IHttpClientFactory httpClient)
+    public BaseService(IHttpClientFactory httpClient, IHttpContextAccessor accessor)
     {
+        _accessor = accessor;
         _httpClient = httpClient;
         ResponseModel = new ResponseDto();
     }
@@ -23,6 +28,9 @@ public class BaseService : IBaseService
         try
         {
             var client = _httpClient.CreateClient("MangoApi");
+            
+            var accessToken = await _accessor.HttpContext.GetTokenAsync("access_token");
+            
             HttpRequestMessage message = new HttpRequestMessage();
             message.Headers.Add("Accept", "application/json");
             message.RequestUri = new Uri(apiRequest.Url);
@@ -30,6 +38,11 @@ public class BaseService : IBaseService
             if (apiRequest.Data is not null)
             {
                 message.Content = new StringContent(JsonConvert.SerializeObject(apiRequest.Data), Encoding.UTF8, "application/json");
+            }
+
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             }
 
             HttpResponseMessage apiResponse = null;

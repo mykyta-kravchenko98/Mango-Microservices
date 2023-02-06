@@ -21,6 +21,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<ResponseDto> Get()
     {
         try

@@ -1,8 +1,8 @@
 using AutoMapper;
-using Mango.Services.ProductAPI.DbContexts;
-using Mango.Services.ProductAPI.Mapper;
-using Mango.Services.ProductAPI.Repository;
-using Mango.Services.ProductAPI.Repository.Interfaces;
+using Mango.Services.ShoppingCartAPI.DbContexts;
+using Mango.Services.ShoppingCartAPI.Mapper;
+using Mango.Services.ShoppingCartAPI.Repository;
+using Mango.Services.ShoppingCartAPI.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -18,7 +18,7 @@ IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
@@ -31,20 +31,20 @@ builder.Services.AddAuthentication("Bearer")
     });
 
 builder.Services.AddAuthorization(opt =>
+{
+    opt.AddPolicy("ApiScope", policy =>
     {
-        opt.AddPolicy("ApiScope", policy =>
-        {
-            policy.RequireAuthenticatedUser();
-            policy.RequireClaim("scope", "mango");
-        });
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("scope", "mango");
     });
+});
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo(){Title = "Mango.Services.ProductApi"});
+    c.SwaggerDoc("v1", new OpenApiInfo(){Title = "Mango.Services.ShoppingCartApi"});
     c.EnableAnnotations();
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
@@ -57,24 +57,23 @@ builder.Services.AddSwaggerGen(c =>
     
     c.AddSecurityRequirement( new OpenApiSecurityRequirement() { 
         {
-        new OpenApiSecurityScheme()
-        {
-            Reference = new OpenApiReference()
+            new OpenApiSecurityScheme()
             {
-                Type = ReferenceType.SecurityScheme,
-                Id = "Bearer"
-            },
-            Scheme = "oauth2",
-            Name = "Bearer",
-            In = ParameterLocation.Header
-        }, new List<string>()
-    }
+                Reference = new OpenApiReference()
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = ParameterLocation.Header
+            }, new List<string>()
+        }
     });
 });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

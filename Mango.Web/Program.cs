@@ -1,6 +1,7 @@
 using Mango.Web;
 using Mango.Web.Services;
 using Mango.Web.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 
 var  MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -16,7 +17,9 @@ builder.Services.AddCors(options =>
 });
 // Add services to the container.
 builder.Services.AddHttpClient<IProductService, ProductService>();
+builder.Services.AddHttpClient<IShoppingCartService, ShoppingCartService>();
 SD.ProductApiBase = builder.Configuration["ServiceUrls:ProductApi"];
+SD.ShoppingCartApiBase = builder.Configuration["ServiceUrls:ShoppingCartApi"];
 
 builder.Services.AddAuthentication(opt =>
     {
@@ -31,6 +34,8 @@ builder.Services.AddAuthentication(opt =>
         opt.ClientSecret = "secret";
         opt.ResponseType = "code";
 
+        opt.ClaimActions.MapJsonKey("role","role", "role");
+        opt.ClaimActions.MapJsonKey("sub","sub", "sub");
         opt.TokenValidationParameters.NameClaimType = "name";
         opt.TokenValidationParameters.RoleClaimType = "role";
         opt.Scope.Add("mango");
@@ -38,6 +43,7 @@ builder.Services.AddAuthentication(opt =>
     });
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IShoppingCartService, ShoppingCartService>();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

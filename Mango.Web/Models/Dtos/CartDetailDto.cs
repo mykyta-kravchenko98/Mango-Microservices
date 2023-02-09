@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Mango.Web.Models.Dtos;
 
-namespace Mango.Services.ShoppingCartAPI.Models.Dto;
+namespace Mango.Web.Models.Dto;
 
 public class CartDetailDto
 {

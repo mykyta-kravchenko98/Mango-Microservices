@@ -11,7 +11,7 @@ public class ProductService : BaseService, IProductService
 
     public ProductService(IHttpClientFactory httpClient, IHttpContextAccessor contextAccessor) : base(httpClient, contextAccessor)
     {
-        _productApiUrl = SD.ProductApiBase + ProductApiControllerPath;
+        _productApiUrl = $"{SD.ProductApiBase}/{ProductApiControllerPath}";
     }
 
     public async Task<T> GetAllProductsAsync<T>()

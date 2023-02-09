@@ -33,6 +33,7 @@ public class ProfileService : IProfileService
 
         claims.Add(new Claim(JwtClaimTypes.GivenName, user.FirstName));
         claims.Add(new Claim(JwtClaimTypes.FamilyName, user.LastName));
+        claims.Add(new Claim(JwtClaimTypes.Id, user.Id));
         
         if (_userManager.SupportsUserRole)
         {

@@ -1,12 +1,13 @@
 using Mango.Services.ShoppingCartAPI.Models.Dto;
 using Mango.Services.ShoppingCartAPI.Repository.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Mango.Services.ShoppingCartAPI.Controllers;
 
-[ApiController]
+[Authorize]
 [Route("api/cart")]
-public class CartController : Controller
+public class CartController : ControllerBase
 {
     private readonly ICartRepository _cartRepository;
     protected ResponseDto _response;
@@ -18,7 +19,7 @@ public class CartController : Controller
     }
 
     [HttpGet("GetCart/{userId}")]
-    public async Task<object> GetCart(string userId)
+    public async Task<ResponseDto> GetCart(string userId)
     {
         try
         {
@@ -35,7 +36,7 @@ public class CartController : Controller
     }
     
     [HttpPost("AddCart")]
-    public async Task<object> AddCart(CartDto cartDto)
+    public async Task<ResponseDto> AddCart([FromBody]CartDto cartDto)
     {
         try
         {
@@ -52,7 +53,7 @@ public class CartController : Controller
     }
     
     [HttpPost("UpdateCart")]
-    public async Task<object> UpdateCart(CartDto cartDto)
+    public async Task<ResponseDto> UpdateCart([FromBody]CartDto cartDto)
     {
         try
         {
@@ -68,8 +69,8 @@ public class CartController : Controller
         return _response;
     }
     
-    [HttpDelete("DeleteCart")]
-    public async Task<object> DeleteCart([FromBody] long cartDetailId)
+    [HttpDelete("DeleteCart/{cartDetailId}")]
+    public async Task<ResponseDto> DeleteCart(long cartDetailId)
     {
         try
         {
@@ -85,8 +86,8 @@ public class CartController : Controller
         return _response;
     }
     
-    [HttpDelete("ClearCart")]
-    public async Task<object> ClearCart([FromBody] string userId)
+    [HttpDelete("ClearCart/{userId}")]
+    public async Task<ResponseDto> ClearCart(string userId)
     {
         try
         {

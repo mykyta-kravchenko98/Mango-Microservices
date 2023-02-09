@@ -18,8 +18,10 @@ builder.Services.AddCors(options =>
 // Add services to the container.
 builder.Services.AddHttpClient<IProductService, ProductService>();
 builder.Services.AddHttpClient<IShoppingCartService, ShoppingCartService>();
+builder.Services.AddHttpClient<ICouponService, CouponService>();
 SD.ProductApiBase = builder.Configuration["ServiceUrls:ProductApi"];
 SD.ShoppingCartApiBase = builder.Configuration["ServiceUrls:ShoppingCartApi"];
+SD.CouponApiBase = builder.Configuration["ServiceUrls:CouponApi"];
 
 builder.Services.AddAuthentication(opt =>
     {
@@ -44,6 +46,7 @@ builder.Services.AddAuthentication(opt =>
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IShoppingCartService, ShoppingCartService>();
+builder.Services.AddScoped<ICouponService, CouponService>();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

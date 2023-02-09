@@ -60,4 +60,23 @@ public class ShoppingCartService: BaseService, IShoppingCartService
             Url = $"{_shoppingCartApiUrl}/ClearCart/{userId}"
         });
     }
+
+    public async Task<T> ApplyCoupon<T>(CartDto cartDto)
+    {
+        return await SendAsync<T>(new ApiRequest()
+        {
+            ApiType = SD.ApiType.POST,
+            Data = cartDto,
+            Url = $"{_shoppingCartApiUrl}/ApplyCoupon"
+        });
+    }
+
+    public async Task<T> RemoveCoupon<T>(string userId)
+    {
+        return await SendAsync<T>(new ApiRequest()
+        {
+            ApiType = SD.ApiType.DELETE,
+            Url = $"{_shoppingCartApiUrl}/RemoveCoupon/{userId}"
+        });
+    }
 }

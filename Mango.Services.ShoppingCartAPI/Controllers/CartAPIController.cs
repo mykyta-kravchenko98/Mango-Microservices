@@ -41,7 +41,7 @@ public class CartController : ControllerBase
         try
         {
             var result = await _cartRepository.CreateUpdateCart(cartDto);
-            _response.Result = result;
+                _response.Result = result;
         }
         catch (Exception ex)
         {
@@ -58,6 +58,23 @@ public class CartController : ControllerBase
         try
         {
             var result = await _cartRepository.CreateUpdateCart(cartDto);
+            _response.Result = result;
+        }
+        catch (Exception ex)
+        {
+            _response.IsSuccess = false;
+            _response.ErrorMessages = new List<string>() { ex.ToString() };
+        }
+
+        return _response;
+    }
+    
+    [HttpPost("ApplyCoupon")]
+    public async Task<ResponseDto> ApplyCoupon([FromBody]CartDto cartDto)
+    {
+        try
+        {
+            var result = await _cartRepository.ApplyCoupon(cartDto.CartHeader.UserId, cartDto.CartHeader.CouponCode);
             _response.Result = result;
         }
         catch (Exception ex)
@@ -92,6 +109,23 @@ public class CartController : ControllerBase
         try
         {
             var result = await _cartRepository.ClearCart(userId);
+            _response.Result = result;
+        }
+        catch (Exception ex)
+        {
+            _response.IsSuccess = false;
+            _response.ErrorMessages = new List<string>() { ex.ToString() };
+        }
+
+        return _response;
+    }
+    
+    [HttpDelete("RemoveCoupon/{userId}")]
+    public async Task<ResponseDto> RemoveCoupon(string userId)
+    {
+        try
+        {
+            var result = await _cartRepository.RemoveCoupon(userId);
             _response.Result = result;
         }
         catch (Exception ex)

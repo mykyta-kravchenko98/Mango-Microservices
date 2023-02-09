@@ -19,7 +19,7 @@ public class CouponController
     }
     
     [HttpGet]
-    [Route("{code}")]
+    [Route("DiscountForCode/{code}")]
     public async Task<ResponseDto> GetDiscountForCode(string code)
     {
         try

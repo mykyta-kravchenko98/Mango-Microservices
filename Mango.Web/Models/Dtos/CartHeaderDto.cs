@@ -11,7 +11,7 @@ public class CartHeaderDto
     public double DiscountTotal { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public DataType PickupDataType { get; set; }
+    public DataType PickupDateTime { get; set; }
     public string Phone { get; set; }
     public string Email { get; set; }
     public string CardNumber { get; set; }

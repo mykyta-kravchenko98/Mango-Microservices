@@ -27,6 +27,7 @@ public class CartController : Controller
     {
         return View(await LoadCartDtoBasedOnLoggedInUser());
     }
+    
     [HttpPost]
     [ActionName("ApplyCoupon")]
     public async Task<IActionResult> ApplyCoupon(CartDto cartDto)
@@ -64,6 +65,12 @@ public class CartController : Controller
         return RedirectToAction(nameof(CartIndex));
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Checkout()
+    {
+        return View(await LoadCartDtoBasedOnLoggedInUser());
+    }
+    
     private async Task<CartDto> LoadCartDtoBasedOnLoggedInUser()
     {
         var userId = User.Claims.FirstOrDefault(u => u.Type == ClaimTypes.NameIdentifier)?.Value;

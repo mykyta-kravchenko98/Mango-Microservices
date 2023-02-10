@@ -11,4 +11,5 @@ public interface IShoppingCartService
     Task<T> ClearCartByUserIdAsync<T>(string userId);
     Task<T> ApplyCoupon<T>(CartDto cartDto);
     Task<T> RemoveCoupon<T>(string userId);
+    Task<T> Checkout<T>(CartHeaderDto cartHeader);
 }

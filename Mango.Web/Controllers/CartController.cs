@@ -64,11 +64,29 @@ public class CartController : Controller
         
         return RedirectToAction(nameof(CartIndex));
     }
-
-    [HttpGet]
+    
     public async Task<IActionResult> Checkout()
     {
         return View(await LoadCartDtoBasedOnLoggedInUser());
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> Checkout(CartDto cartDto)
+    {
+        try
+        {
+            var response = _shoppingCartService.Checkout<ResponseDto>(cartDto.CartHeader);
+            return RedirectToAction(nameof(Confirmation));
+        }
+        catch (Exception ex)
+        {
+            return View(cartDto);
+        }
+    }
+    
+    public async Task<IActionResult> Confirmation()
+    {
+        return View();
     }
     
     private async Task<CartDto> LoadCartDtoBasedOnLoggedInUser()

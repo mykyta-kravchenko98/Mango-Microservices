@@ -75,7 +75,12 @@ public class CartController : Controller
     {
         try
         {
-            var response = _shoppingCartService.Checkout<ResponseDto>(cartDto.CartHeader);
+            var response = await _shoppingCartService.Checkout<ResponseDto>(cartDto.CartHeader);
+            if (!response.IsSuccess)
+            {
+                TempData["Error"] = response.DisplayMessage;
+                return RedirectToAction(nameof(Checkout));
+            }
             return RedirectToAction(nameof(Confirmation));
         }
         catch (Exception ex)

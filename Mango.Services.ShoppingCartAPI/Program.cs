@@ -20,6 +20,7 @@ builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<ICouponRepository, CouponRepository>();
 
 builder.Services.AddSingleton<IMessageBusSettings, MessageBusSettingsRepository>();
 builder.Services.AddSingleton<IMessageBus, AzureServiceMessageBus>();
@@ -45,6 +46,9 @@ builder.Services.AddAuthorization(opt =>
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddHttpClient<ICouponRepository, CouponRepository>(u => u.BaseAddress =
+    new Uri(builder.Configuration["ServiceUrls:CouponApi"]));
 
 builder.Services.AddSwaggerGen(c =>
 {

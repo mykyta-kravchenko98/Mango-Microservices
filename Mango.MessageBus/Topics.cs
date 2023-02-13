@@ -2,5 +2,6 @@ namespace Mango.MessageBus;
 
 public enum Topics
 {
-    CheckoutMessageTopic = 0
+    CheckoutMessage = 0,
+    PaymentMessage = 1
 }

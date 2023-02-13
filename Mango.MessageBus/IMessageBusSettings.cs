@@ -4,4 +4,5 @@ public interface IMessageBusSettings
 {
     string AzureServiceBusConnectionUrl { get; }
     string CheckoutMessageTopicName { get; }
+    string PaymentMessageTopicName { get; }
 }

@@ -24,6 +24,7 @@ builder.Services.AddScoped<ICouponRepository, CouponRepository>();
 
 builder.Services.AddSingleton<IMessageBusSettings, MessageBusSettingsRepository>();
 builder.Services.AddSingleton<IMessageBus, AzureServiceMessageBus>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>

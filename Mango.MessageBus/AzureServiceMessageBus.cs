@@ -17,8 +17,12 @@ public class AzureServiceMessageBus : IMessageBus
         string topicName = String.Empty;
         switch (topic)
         {
-            case Topics.CheckoutMessageTopic:
+            case Topics.CheckoutMessage:
                 topicName = _messageBusSettings.CheckoutMessageTopicName;
+                break;
+            
+            case Topics.PaymentMessage:
+                topicName = _messageBusSettings.PaymentMessageTopicName;
                 break;
             
             default:

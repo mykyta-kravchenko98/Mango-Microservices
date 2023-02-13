@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using AutoMapper;
 using Azure.Messaging.ServiceBus;
+using Mango.MessageBus;
 using Mango.Services.OrderAPI.Messages;
 using Mango.Services.OrderAPI.Models;
 using Mango.Services.OrderAPI.Repository;
@@ -14,6 +15,7 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
     private readonly OrderRepository _orderRepository;
     private readonly IMapper _mapper;
     private readonly ILogger<AzureServiceBusConsumer> _logger;
+    private readonly IMessageBus _messageBus;
     
     private readonly string _serviceBusConnection;
     private readonly string _checkoutMessageTopicName;
@@ -22,11 +24,12 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
     private ServiceBusProcessor _checkOutProcessor;
 
     public AzureServiceBusConsumer(OrderRepository orderRepository, IMapper mapper,
-        IConfiguration configuration, ILogger<AzureServiceBusConsumer> logger)
+        IConfiguration configuration, ILogger<AzureServiceBusConsumer> logger, IMessageBus messageBus)
     {
         _orderRepository = orderRepository;
         _mapper = mapper;
         _logger = logger;
+        _messageBus = messageBus;
 
         var section = configuration.GetSection("AzureMessageBusSettings");
         _serviceBusConnection = section.GetValue<string>("AzureServiceBusConnection");
@@ -71,5 +74,26 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
         orderHeader.OrderDetails = orderDetail;
 
         await _orderRepository.AddOrder(orderHeader);
+
+        PaymentRequestMessage paymentRequestMessage = new()
+        {
+            Name = $"{orderHeader.FirstName} {orderHeader.LastName}",
+            CardNumber = orderHeader.CardNumber,
+            CVV = orderHeader.CVV,
+            ExpireMonthYear = orderHeader.ExpireMonthYear,
+            OrderId = orderHeader.OrderHeaderId,
+            OrderTotal = orderHeader.OrderTotal
+        };
+
+        try
+        {
+            await _messageBus.PublishMessage(paymentRequestMessage, Topics.PaymentMessage);
+            await args.CompleteMessageAsync(args.Message);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($" AzureServiceBusConsumer OnCheckOutMessageReceived method" +
+                             $" - sending payment message error:{Environment.NewLine}{ex}");
+        }
     }
 }

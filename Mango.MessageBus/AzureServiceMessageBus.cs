@@ -2,6 +2,7 @@ using System.Text;
 using Azure.Messaging.ServiceBus;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Mango.MessageBus;
 
@@ -25,6 +26,10 @@ public class AzureServiceMessageBus : IMessageBus
                 topicName = _messageBusSettings.PaymentMessageTopicName;
                 break;
             
+            case Topics.PaymentUpdateMessage:
+                topicName = _messageBusSettings.PaymentUpdateMessageTopicName;
+                break;
+            
             default:
                 topicName = _messageBusSettings.CheckoutMessageTopicName;
                 break;
@@ -33,7 +38,8 @@ public class AzureServiceMessageBus : IMessageBus
         await using var client = new ServiceBusClient(_messageBusSettings.AzureServiceBusConnectionUrl);
         ServiceBusSender sender = client.CreateSender(topicName);
 
-        var jsonMessage = JsonConvert.SerializeObject(message);
+        var stringEnumConverter = new StringEnumConverter();
+        var jsonMessage = JsonConvert.SerializeObject(message, stringEnumConverter);
         ServiceBusMessage finalMessage = new ServiceBusMessage(Encoding.UTF8.GetBytes(jsonMessage))
         {
             CorrelationId = Guid.NewGuid().ToString()

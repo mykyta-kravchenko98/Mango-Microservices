@@ -19,9 +19,12 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
     
     private readonly string _serviceBusConnection;
     private readonly string _checkoutMessageTopicName;
+    private readonly string _updatePaymentResultTopicName;
     private readonly string _checkoutSubscriptionName;
-
+    private readonly string _updatePaymentResultSubscriptionName;
+    
     private ServiceBusProcessor _checkOutProcessor;
+    private ServiceBusProcessor _paymentUpdateProcessor;
 
     public AzureServiceBusConsumer(OrderRepository orderRepository, IMapper mapper,
         IConfiguration configuration, ILogger<AzureServiceBusConsumer> logger, IMessageBus messageBus)
@@ -35,10 +38,13 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
         _serviceBusConnection = section.GetValue<string>("AzureServiceBusConnection");
         _checkoutMessageTopicName = section.GetValue<string>("CheckoutMessageTopicName");
         _checkoutSubscriptionName = section.GetValue<string>("CheckoutSubscriptionName");
+        _updatePaymentResultSubscriptionName = section.GetValue<string>("UpdatePaymentResultSubscriptionName");
+        _updatePaymentResultTopicName = section.GetValue<string>("UpdatePaymentResultTopicName");
 
         var client = new ServiceBusClient(_serviceBusConnection);
 
         _checkOutProcessor = client.CreateProcessor(_checkoutMessageTopicName, _checkoutSubscriptionName);
+        _paymentUpdateProcessor = client.CreateProcessor(_updatePaymentResultTopicName, _updatePaymentResultSubscriptionName);
     }
 
     public async Task Start()
@@ -46,11 +52,19 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
         _checkOutProcessor.ProcessMessageAsync += OnCheckOutMessageReceived;
         _checkOutProcessor.ProcessErrorAsync += ErrorHandler;
         await _checkOutProcessor.StartProcessingAsync();
+        
+        _paymentUpdateProcessor.ProcessMessageAsync += OnOrderPaymentUpdateReceived;
+        _paymentUpdateProcessor.ProcessErrorAsync += ErrorHandler;
+        await _paymentUpdateProcessor.StartProcessingAsync();
     }
+
     public async Task Stop()
     {
         await _checkOutProcessor.StopProcessingAsync();
         await _checkOutProcessor.DisposeAsync();
+        
+        await _paymentUpdateProcessor.StopProcessingAsync();
+        await _paymentUpdateProcessor.DisposeAsync();
     }
 
     private Task ErrorHandler(ProcessErrorEventArgs arg)
@@ -95,5 +109,19 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
             _logger.LogError($" AzureServiceBusConsumer OnCheckOutMessageReceived method" +
                              $" - sending payment message error:{Environment.NewLine}{ex}");
         }
+    }
+    
+    private async Task OnOrderPaymentUpdateReceived(ProcessMessageEventArgs args)
+    {
+        var message = args.Message;
+
+        var body = Encoding.UTF8.GetString(message.Body);
+
+        var updatePaymentResultMessage = JsonConvert.DeserializeObject<UpdatePaymentResultMessage>(body);
+
+        await _orderRepository.UpdateOrderStatusOfPayment(updatePaymentResultMessage.OrderId,
+            updatePaymentResultMessage.Status);
+
+        await args.CompleteMessageAsync(args.Message);
     }
 }

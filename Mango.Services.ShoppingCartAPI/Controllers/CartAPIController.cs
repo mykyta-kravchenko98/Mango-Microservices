@@ -170,6 +170,8 @@ public class CartController : ControllerBase
             checkoutHeader.CartDetails = cartDto.CartDetails;
 
             await _messageBus.PublishMessage(checkoutHeader, Topics.CheckoutMessage);
+
+            await _cartRepository.ClearCart(checkoutHeader.UserId);
         }
         catch (Exception ex)
         {

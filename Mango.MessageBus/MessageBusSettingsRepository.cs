@@ -14,4 +14,5 @@ public class MessageBusSettingsRepository : IMessageBusSettings
     public string AzureServiceBusConnectionUrl => _configuration["AzureMessageBusSettings:AzureServiceBusConnection"];
     public string CheckoutMessageTopicName => _configuration["AzureMessageBusSettings:CheckoutMessageTopicName"];
     public string PaymentMessageTopicName => _configuration["AzureMessageBusSettings:PaymentMessageTopicName"];
+    public string PaymentUpdateMessageTopicName => _configuration["AzureMessageBusSettings:PaymentUpdateMessageTopicName"];
 }

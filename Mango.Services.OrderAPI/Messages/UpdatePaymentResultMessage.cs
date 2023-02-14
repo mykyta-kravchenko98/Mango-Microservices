@@ -6,4 +6,5 @@ public class UpdatePaymentResultMessage
 {
     public long OrderId { get; set; }
     public PaymentStatus Status { get; set; }
+    public string Email { get; set; }
 }

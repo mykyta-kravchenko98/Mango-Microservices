@@ -96,7 +96,8 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
             CVV = orderHeader.CVV,
             ExpireMonthYear = orderHeader.ExpireMonthYear,
             OrderId = orderHeader.OrderHeaderId,
-            OrderTotal = orderHeader.OrderTotal
+            OrderTotal = orderHeader.OrderTotal,
+            Email = orderHeader.Email
         };
 
         try

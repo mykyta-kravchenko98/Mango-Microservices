@@ -118,9 +118,9 @@ public class CartRepository : ICartRepository
             if (totalCountOfCartItems == 1)
             {
                 var cartHeaderToRemove =
-                    _dbContext.CartHeaders.FirstOrDefaultAsync(ch => ch.CartHeaderId == cartDetail.CartHeaderId);
+                    await _dbContext.CartHeaders.FirstOrDefaultAsync(ch => ch.CartHeaderId == cartDetail.CartHeaderId);
 
-                _dbContext.Remove(cartHeaderToRemove);
+                _dbContext.CartHeaders.Remove(cartHeaderToRemove);
             }
 
             await _dbContext.SaveChangesAsync();

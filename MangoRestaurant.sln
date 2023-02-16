@@ -32,6 +32,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gateway", "Gateway", "{FD32
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mango.GatewaySolution", "Mango.GatewaySolution\Mango.GatewaySolution.csproj", "{057DFE20-267F-4571-A4D3-000D7D7760CE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mango.RabbitMQ", "Mango.RabbitMQ\Mango.RabbitMQ.csproj", "{B2E7D4D8-FADB-4C06-8754-6FE01F47ABC2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,7 @@ Global
 		{216AF273-31F6-4C30-8DF3-59E5CFE94F0C} = {8FA41D6C-BAB3-47D7-985F-8D4D7406F957}
 		{03E568ED-7021-4130-8A12-C86B49ADE4A2} = {8FA41D6C-BAB3-47D7-985F-8D4D7406F957}
 		{057DFE20-267F-4571-A4D3-000D7D7760CE} = {FD32B6B0-BBF7-407F-965D-62976AD44C62}
+		{B2E7D4D8-FADB-4C06-8754-6FE01F47ABC2} = {FA3EF84C-2A1C-4C31-91A8-CC6B7B208AB0}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{614139C7-E32D-4CB2-B403-E4ED27CA5B02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -95,5 +98,9 @@ Global
 		{057DFE20-267F-4571-A4D3-000D7D7760CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{057DFE20-267F-4571-A4D3-000D7D7760CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{057DFE20-267F-4571-A4D3-000D7D7760CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2E7D4D8-FADB-4C06-8754-6FE01F47ABC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2E7D4D8-FADB-4C06-8754-6FE01F47ABC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2E7D4D8-FADB-4C06-8754-6FE01F47ABC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2E7D4D8-FADB-4C06-8754-6FE01F47ABC2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

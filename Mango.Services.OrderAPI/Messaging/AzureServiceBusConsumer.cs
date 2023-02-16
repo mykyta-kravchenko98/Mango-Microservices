@@ -1,9 +1,9 @@
 using System.Text;
-using System.Text.Json.Serialization;
 using AutoMapper;
 using Azure.Messaging.ServiceBus;
 using Mango.MessageBus;
 using Mango.Services.OrderAPI.Messages;
+using Mango.Services.OrderAPI.Messaging.Interfaces;
 using Mango.Services.OrderAPI.Models;
 using Mango.Services.OrderAPI.Repository;
 using Newtonsoft.Json;
@@ -16,15 +16,9 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
     private readonly IMapper _mapper;
     private readonly ILogger<AzureServiceBusConsumer> _logger;
     private readonly IMessageBus _messageBus;
-    
-    private readonly string _serviceBusConnection;
-    private readonly string _checkoutMessageTopicName;
-    private readonly string _updatePaymentResultTopicName;
-    private readonly string _checkoutSubscriptionName;
-    private readonly string _updatePaymentResultSubscriptionName;
-    
-    private ServiceBusProcessor _checkOutProcessor;
-    private ServiceBusProcessor _paymentUpdateProcessor;
+
+    private readonly ServiceBusProcessor _checkOutProcessor;
+    private readonly ServiceBusProcessor _paymentUpdateProcessor;
 
     public AzureServiceBusConsumer(OrderRepository orderRepository, IMapper mapper,
         IConfiguration configuration, ILogger<AzureServiceBusConsumer> logger, IMessageBus messageBus)
@@ -35,16 +29,16 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
         _messageBus = messageBus;
 
         var section = configuration.GetSection("AzureMessageBusSettings");
-        _serviceBusConnection = section.GetValue<string>("AzureServiceBusConnection");
-        _checkoutMessageTopicName = section.GetValue<string>("CheckoutMessageTopicName");
-        _checkoutSubscriptionName = section.GetValue<string>("CheckoutSubscriptionName");
-        _updatePaymentResultSubscriptionName = section.GetValue<string>("UpdatePaymentResultSubscriptionName");
-        _updatePaymentResultTopicName = section.GetValue<string>("UpdatePaymentResultTopicName");
+        var serviceBusConnection = section.GetValue<string>("AzureServiceBusConnection");
+        var checkoutMessageTopicName = section.GetValue<string>("CheckoutMessageTopicName");
+        var checkoutSubscriptionName = section.GetValue<string>("CheckoutSubscriptionName");
+        var updatePaymentResultSubscriptionName = section.GetValue<string>("UpdatePaymentResultSubscriptionName");
+        var updatePaymentResultTopicName = section.GetValue<string>("UpdatePaymentResultTopicName");
 
-        var client = new ServiceBusClient(_serviceBusConnection);
+        var client = new ServiceBusClient(serviceBusConnection);
 
-        _checkOutProcessor = client.CreateProcessor(_checkoutMessageTopicName, _checkoutSubscriptionName);
-        _paymentUpdateProcessor = client.CreateProcessor(_updatePaymentResultTopicName, _updatePaymentResultSubscriptionName);
+        _checkOutProcessor = client.CreateProcessor(checkoutMessageTopicName, checkoutSubscriptionName);
+        _paymentUpdateProcessor = client.CreateProcessor(updatePaymentResultTopicName, updatePaymentResultSubscriptionName);
     }
 
     public async Task Start()
@@ -103,6 +97,7 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
         try
         {
             await _messageBus.PublishMessage(paymentRequestMessage, Topics.PaymentMessage);
+            
             await args.CompleteMessageAsync(args.Message);
         }
         catch (Exception ex)

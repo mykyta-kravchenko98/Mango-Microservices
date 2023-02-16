@@ -1,17 +1,28 @@
 using System.Text.Json.Serialization;
 using Mango.MessageBus;
+using Mango.RabbitMQ.Configs;
+using Mango.RabbitMQ.Configs.Interfaces;
+using Mango.RabbitMQ.Services;
+using Mango.RabbitMQ.Services.Interfaces;
 using Mango.Services.PaymentAPI.Extension;
 using Mango.Services.PaymentAPI.Messaging;
+using Mango.Services.PaymentAPI.Messaging.Interfaces;
 using PaymentProcessor;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddSingleton<IProcessPayment, ProcessPayment>();
-builder.Services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>();
 
+//Azure
 builder.Services.AddSingleton<IMessageBusSettings, MessageBusSettingsRepository>(); 
 builder.Services.AddSingleton<IMessageBus, AzureServiceMessageBus>();
+builder.Services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>();
+
+//RabbitMQ
+builder.Services.AddSingleton<IMessageProducer, MessageProducer>();
+builder.Services.AddSingleton<IRabbitMQSettings, RabbitMQSettingsRepository>();
+builder.Services.AddSingleton<IRabbitMqConsumer, RabbitMqConsumer>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

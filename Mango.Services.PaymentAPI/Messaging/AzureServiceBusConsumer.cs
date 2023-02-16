@@ -2,6 +2,7 @@ using System.Text;
 using Azure.Messaging.ServiceBus;
 using Mango.MessageBus;
 using Mango.Services.PaymentAPI.Messages;
+using Mango.Services.PaymentAPI.Messaging.Interfaces;
 using Newtonsoft.Json;
 using PaymentProcessor;
 
@@ -12,12 +13,7 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
     private readonly ILogger<AzureServiceBusConsumer> _logger;
     private readonly IMessageBus _messageBus;
     private readonly IProcessPayment _processPayment;
-    
-    private readonly string _serviceBusConnection;
-    private readonly string _paymentMessageTopicName;
-    private readonly string _paymnetSubscriptionName;
-
-    private ServiceBusProcessor _paymentProcessor;
+    private readonly ServiceBusProcessor _paymentProcessor;
 
     public AzureServiceBusConsumer(IConfiguration configuration,
         ILogger<AzureServiceBusConsumer> logger, IMessageBus messageBus, IProcessPayment processPayment)
@@ -27,13 +23,13 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
         _processPayment = processPayment;
 
         var section = configuration.GetSection("AzureMessageBusSettings");
-        _serviceBusConnection = section.GetValue<string>("AzureServiceBusConnection");
-        _paymentMessageTopicName = section.GetValue<string>("PaymentMessageTopicName");
-        _paymnetSubscriptionName = section.GetValue<string>("PaymentSubscriptionName");
+        var serviceBusConnection = section.GetValue<string>("AzureServiceBusConnection");
+        var paymentMessageTopicName = section.GetValue<string>("PaymentMessageTopicName");
+        var paymentSubscriptionName = section.GetValue<string>("PaymentSubscriptionName");
 
-        var client = new ServiceBusClient(_serviceBusConnection);
+        var client = new ServiceBusClient(serviceBusConnection);
 
-        _paymentProcessor = client.CreateProcessor(_paymentMessageTopicName, _paymnetSubscriptionName);
+        _paymentProcessor = client.CreateProcessor(paymentMessageTopicName, paymentSubscriptionName);
     }
 
     public async Task Start()

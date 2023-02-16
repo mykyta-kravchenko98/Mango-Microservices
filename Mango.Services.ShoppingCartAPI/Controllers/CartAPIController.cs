@@ -1,4 +1,7 @@
 using Mango.MessageBus;
+using Mango.RabbitMQ;
+using Mango.RabbitMQ.Enums;
+using Mango.RabbitMQ.Services.Interfaces;
 using Mango.Services.ShoppingCartAPI.Messages;
 using Mango.Services.ShoppingCartAPI.Models.Dto;
 using Mango.Services.ShoppingCartAPI.Repository.Interfaces;
@@ -14,13 +17,15 @@ public class CartController : ControllerBase
     private readonly ICartRepository _cartRepository;
     private readonly ICouponRepository _couponRepository;
     private readonly IMessageBus _messageBus;
-    private ResponseDto _response;
+    private readonly IMessageProducer _rabbitProducer;
+    private readonly ResponseDto _response;
 
-    public CartController(ICartRepository cartRepository, IMessageBus messageBus, ICouponRepository couponRepository)
+    public CartController(ICartRepository cartRepository, IMessageBus messageBus, ICouponRepository couponRepository, IMessageProducer rabbitProducer)
     {
         _cartRepository = cartRepository;
         _messageBus = messageBus;
         _couponRepository = couponRepository;
+        _rabbitProducer = rabbitProducer;
         _response = new ResponseDto();
     }
 
@@ -169,7 +174,11 @@ public class CartController : ControllerBase
             
             checkoutHeader.CartDetails = cartDto.CartDetails;
 
-            await _messageBus.PublishMessage(checkoutHeader, Topics.CheckoutMessage);
+            //Uncommit if you want Azure Service Bus
+            //await _messageBus.PublishMessage(checkoutHeader, Topics.CheckoutMessage);
+            
+            //RabbitMQ realization
+            _rabbitProducer.PublishMessage(checkoutHeader, Queue.Checkout);
 
             await _cartRepository.ClearCart(checkoutHeader.UserId);
         }

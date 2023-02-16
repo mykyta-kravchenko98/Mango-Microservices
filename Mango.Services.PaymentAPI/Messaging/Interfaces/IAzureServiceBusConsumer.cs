@@ -1,4 +1,4 @@
-namespace Mango.Services.PaymentAPI.Messaging;
+namespace Mango.Services.PaymentAPI.Messaging.Interfaces;
 
 public interface IAzureServiceBusConsumer
 {

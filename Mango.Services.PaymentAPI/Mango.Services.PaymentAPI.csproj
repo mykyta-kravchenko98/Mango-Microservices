@@ -12,6 +12,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Mango.MessageBus\Mango.MessageBus.csproj" />
+      <ProjectReference Include="..\Mango.RabbitMQ\Mango.RabbitMQ.csproj" />
       <ProjectReference Include="..\PaymentProcessor\PaymentProcessor.csproj" />
     </ItemGroup>
 

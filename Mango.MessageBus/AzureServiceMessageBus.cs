@@ -1,6 +1,5 @@
 using System.Text;
 using Azure.Messaging.ServiceBus;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 

@@ -1,5 +1,9 @@
 using AutoMapper;
 using Mango.MessageBus;
+using Mango.RabbitMQ.Configs;
+using Mango.RabbitMQ.Configs.Interfaces;
+using Mango.RabbitMQ.Services;
+using Mango.RabbitMQ.Services.Interfaces;
 using Mango.Services.ShoppingCartAPI.DbContexts;
 using Mango.Services.ShoppingCartAPI.Mapper;
 using Mango.Services.ShoppingCartAPI.Repository;
@@ -25,6 +29,10 @@ builder.Services.AddScoped<ICouponRepository, CouponRepository>();
 builder.Services.AddSingleton<IMessageBusSettings, MessageBusSettingsRepository>();
 builder.Services.AddSingleton<IMessageBus, AzureServiceMessageBus>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+//RabbitMQ
+builder.Services.AddSingleton<IMessageProducer, MessageProducer>();
+builder.Services.AddSingleton<IRabbitMQSettings, RabbitMQSettingsRepository>();
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>

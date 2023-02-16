@@ -1,9 +1,14 @@
 using AutoMapper;
 using Mango.MessageBus;
+using Mango.RabbitMQ.Configs;
+using Mango.RabbitMQ.Configs.Interfaces;
+using Mango.RabbitMQ.Services;
+using Mango.RabbitMQ.Services.Interfaces;
 using Mango.Services.OrderAPI.DbContexts;
 using Mango.Services.OrderAPI.Extension;
 using Mango.Services.OrderAPI.Mapper;
 using Mango.Services.OrderAPI.Messaging;
+using Mango.Services.OrderAPI.Messaging.Interfaces;
 using Mango.Services.OrderAPI.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -25,9 +30,14 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddSingleton(new OrderRepository(optionBuilder.Options));
 builder.Services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>();
+builder.Services.AddSingleton<IRabbitMqConsumer, RabbitMqConsumer>();
 
+//Azure Service Bus
 builder.Services.AddSingleton<IMessageBusSettings, MessageBusSettingsRepository>();
 builder.Services.AddSingleton<IMessageBus, AzureServiceMessageBus>();
+//RabbitMQ
+builder.Services.AddSingleton<IMessageProducer, MessageProducer>();
+builder.Services.AddSingleton<IRabbitMQSettings, RabbitMQSettingsRepository>();
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>

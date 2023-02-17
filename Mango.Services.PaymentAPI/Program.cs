@@ -1,4 +1,8 @@
 using System.Text.Json.Serialization;
+using Mango.Kafka.Configs;
+using Mango.Kafka.Configs.Interfaces;
+using Mango.Kafka.Services;
+using Mango.Kafka.Services.Interfaces;
 using Mango.MessageBus;
 using Mango.RabbitMQ.Configs;
 using Mango.RabbitMQ.Configs.Interfaces;
@@ -23,6 +27,11 @@ builder.Services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>
 builder.Services.AddSingleton<IMessageProducer, MessageProducer>();
 builder.Services.AddSingleton<IRabbitMQSettings, RabbitMQSettingsRepository>();
 builder.Services.AddSingleton<IRabbitMqConsumer, RabbitMqConsumer>();
+
+//Kafka
+builder.Services.AddSingleton<IKafkaProducer, KafkaProducer>();
+builder.Services.AddSingleton<IKafkaSettings, KafkaSettingsRepository>();
+builder.Services.AddHostedService<KafkaConsumer>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

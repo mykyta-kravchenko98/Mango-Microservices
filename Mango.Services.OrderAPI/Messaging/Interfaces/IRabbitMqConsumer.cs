@@ -1,7 +1,5 @@
 namespace Mango.Services.OrderAPI.Messaging.Interfaces;
 
-public interface IRabbitMqConsumer
+public interface IRabbitMqConsumer : IBaseConsumer
 {
-    Task Start();
-    Task Stop();
 }

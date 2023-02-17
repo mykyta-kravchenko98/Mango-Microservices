@@ -1,3 +1,4 @@
+using Mango.Kafka.Services.Interfaces;
 using Mango.MessageBus;
 using Mango.RabbitMQ;
 using Mango.RabbitMQ.Enums;
@@ -7,6 +8,7 @@ using Mango.Services.ShoppingCartAPI.Models.Dto;
 using Mango.Services.ShoppingCartAPI.Repository.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Topics = Mango.Kafka.Topics;
 
 namespace Mango.Services.ShoppingCartAPI.Controllers;
 
@@ -18,14 +20,17 @@ public class CartController : ControllerBase
     private readonly ICouponRepository _couponRepository;
     private readonly IMessageBus _messageBus;
     private readonly IMessageProducer _rabbitProducer;
+    private readonly IKafkaProducer _kafkaProducer;
     private readonly ResponseDto _response;
 
-    public CartController(ICartRepository cartRepository, IMessageBus messageBus, ICouponRepository couponRepository, IMessageProducer rabbitProducer)
+    public CartController(ICartRepository cartRepository, IMessageBus messageBus,
+        ICouponRepository couponRepository, IMessageProducer rabbitProducer, IKafkaProducer kafkaProducer)
     {
         _cartRepository = cartRepository;
         _messageBus = messageBus;
         _couponRepository = couponRepository;
         _rabbitProducer = rabbitProducer;
+        _kafkaProducer = kafkaProducer;
         _response = new ResponseDto();
     }
 
@@ -178,7 +183,10 @@ public class CartController : ControllerBase
             //await _messageBus.PublishMessage(checkoutHeader, Topics.CheckoutMessage);
             
             //RabbitMQ realization
-            _rabbitProducer.PublishMessage(checkoutHeader, Queue.Checkout);
+            //_rabbitProducer.PublishMessage(checkoutHeader, Queue.Checkout);
+            
+            //Kafka realization
+            await _kafkaProducer.PublishMessage(checkoutHeader, Topics.CheckoutMessage);
 
             await _cartRepository.ClearCart(checkoutHeader.UserId);
         }

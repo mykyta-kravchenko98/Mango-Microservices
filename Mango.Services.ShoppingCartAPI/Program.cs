@@ -1,4 +1,8 @@
 using AutoMapper;
+using Mango.Kafka.Configs;
+using Mango.Kafka.Configs.Interfaces;
+using Mango.Kafka.Services;
+using Mango.Kafka.Services.Interfaces;
 using Mango.MessageBus;
 using Mango.RabbitMQ.Configs;
 using Mango.RabbitMQ.Configs.Interfaces;
@@ -33,6 +37,10 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 //RabbitMQ
 builder.Services.AddSingleton<IMessageProducer, MessageProducer>();
 builder.Services.AddSingleton<IRabbitMQSettings, RabbitMQSettingsRepository>();
+
+//Kafka
+builder.Services.AddSingleton<IKafkaProducer, KafkaProducer>();
+builder.Services.AddSingleton<IKafkaSettings, KafkaSettingsRepository>();
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>

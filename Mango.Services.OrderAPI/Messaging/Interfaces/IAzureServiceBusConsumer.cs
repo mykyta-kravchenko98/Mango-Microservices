@@ -1,7 +1,5 @@
 namespace Mango.Services.OrderAPI.Messaging.Interfaces;
 
-public interface IAzureServiceBusConsumer
+public interface IAzureServiceBusConsumer : IBaseConsumer
 {
-    Task Start();
-    Task Stop();
 }
